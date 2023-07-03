@@ -15,3 +15,8 @@ for file in csv_files:
     print(file)
 
 
+suit_iofrol = pd.read_csv(os.path.join(DATA_PATH, csv_files[1]),sep=';')
+
+
+
+
