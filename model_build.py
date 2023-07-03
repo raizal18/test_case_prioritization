@@ -20,12 +20,6 @@ env = gym.make("CartPole-v1")
 
 env = gym.envs.registry.keys()
 
-model = DQN("MlpPolicy", env, verbose=1)
-
-model.learn(total_timesteps=20000)
-
-model.predict()
-
 
 
 import gym
@@ -76,7 +70,7 @@ class IndustrialScenarioEnv(gym.Env):
             metadata['scheduleDate'],
             metadata['maxDuration']
         ], dtype=np.float32)
-
+        
 from create_environment import IndustrialDatasetScenarioProvider
 
 scenario_provider = IndustrialDatasetScenarioProvider('data/iofrol.csv')
@@ -85,4 +79,4 @@ env = IndustrialScenarioEnv(scenario_provider)
 
 model = DQN("MlpPolicy", env, verbose=1)
 
-model.learn(total_timesteps=20000)
+model.learn(total_timesteps=20000) 
