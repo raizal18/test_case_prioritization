@@ -28,47 +28,59 @@ model.predict()
 
 
 
+import gym
+from gym import spaces
+import numpy as np
 
-class TestCaseEnv(gym.Env):
+
+class IndustrialScenarioEnv(gym.Env):
     def __init__(self, scenario_provider):
-        super(TestCaseEnv, self).__init__()
-        self.scenario_provider = scenario_provider
-        self.current_scenario = None
+        super(IndustrialScenarioEnv, self).__init__()
 
-        # Define the observation space and action space according to your problem
-        self.observation_space = gym.spaces.Discrete(2)  # Example observation space with two choices: 0 or 1
-        self.action_space = gym.spaces.Discrete(2)  # Example action space with two choices: 0 or 1
+        self.scenario_provider = scenario_provider
+        self.scenario = None
+        self.action_space = spaces.Discrete(2)  # Two possible actions: 0 (don't schedule) and 1 (schedule)
+        self.observation_space = spaces.Box(low=0, high=1, shape=(6,), dtype=np.float32)  # Observation space shape: (6,)
+
+    def reset(self, **kwargs):
+        self.scenario.clean()
+        return self._get_observation()
 
     def step(self, action):
-        # Implement the logic to process the action and update the environment state
-        # Calculate the reward based on the action and the verdict
-        verdict = self.current_scenario.solutions[self.current_scenario.testcases[self.current_test_case]['Id']]
-        reward = 1 if action == verdict else 0
-        self.current_test_case += 1
-        done = self.current_test_case >= len(self.current_scenario.testcases)
-        return self.current_test_case, reward, done, {}
+        assert self.action_space.contains(action)
 
-    def reset(self):
-        # Reset the environment to the initial state
-        self.current_scenario = self.scenario_provider.get()
-        self.current_test_case = 0
-        return self.current_test_case
+        if action == 0:
+            self.scenario.clean()
+        else:
+            self.scenario.submit()
 
-    def render(self, mode='human'):
-        pass
-        # visualization or rendering logic if needed
+        done = self.scenario is None
+        reward = self._calculate_reward()
+        observation = self._get_observation()
 
-    def close(self):
-        pass
-        # cleanup or shutdown logic if needed
+        return observation, reward, done, {}
 
+    def _calculate_reward(self):
+        # Implement your reward calculation logic based on the scenario's outcome
+        result = self.scenario.submit()
+        return result[0]  # Example: returning the number of detected failures as the reward
 
-
+    def _get_observation(self):
+        # Implement your observation extraction logic based on the current scenario
+        metadata = self.scenario.get_ta_metadata()
+        return np.array([
+            metadata['availAgents'],
+            metadata['totalTime'],
+            metadata['minExecTime'],
+            metadata['maxExecTime'],
+            metadata['scheduleDate'],
+            metadata['maxDuration']
+        ], dtype=np.float32)
 
 from create_environment import IndustrialDatasetScenarioProvider
 
 scenario_provider = IndustrialDatasetScenarioProvider('data/iofrol.csv')
-env = TestCaseEnv(scenario_provider)
+env = IndustrialScenarioEnv(scenario_provider)
 
 
 model = DQN("MlpPolicy", env, verbose=1)
