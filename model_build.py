@@ -22,9 +22,9 @@ env = gym.envs.registry.keys()
 
 
 
-import gym
-from gym import spaces
-import numpy as np
+# import gym
+# from gym import spaces
+# import numpy as np
 
 
 class IndustrialScenarioEnv(gym.Env):
@@ -72,6 +72,8 @@ class IndustrialScenarioEnv(gym.Env):
         ], dtype=np.float32)
         
 from create_environment import IndustrialDatasetScenarioProvider
+from TestcaseExecutionDataLoader import TestCaseExecutionDataLoader
+
 
 scenario_provider = IndustrialDatasetScenarioProvider('data/iofrol.csv')
 env = IndustrialScenarioEnv(scenario_provider)
