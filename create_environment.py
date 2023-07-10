@@ -7,11 +7,7 @@ import pandas as pd
 import os
 import random
 import copy
-
-try:
-    import cPickle as pickle
-except:
-    import pickle
+import pickle
 
 
 def inhomogeneous_poisson(l, rej_threshold, default=0, size=1):
