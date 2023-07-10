@@ -74,11 +74,26 @@ class IndustrialScenarioEnv(gym.Env):
 from create_environment import IndustrialDatasetScenarioProvider
 from TestcaseExecutionDataLoader import TestCaseExecutionDataLoader
 
+from CIListWiseEnv import CIListWiseEnv
 
-scenario_provider = IndustrialDatasetScenarioProvider('data/iofrol.csv')
-env = IndustrialScenarioEnv(scenario_provider)
+
+test_data_loader = TestCaseExecutionDataLoader("data/iofrol-additional-features.csv", "simple")
+test_data = test_data_loader.load_data()
+ci_cycle_logs = test_data_loader.pre_process()
+
+from Config import Config
+
+conf = Config()
+
+conf.win_size = 10
+
+env = CIListWiseEnv(ci_cycle_logs[1], conf)
+
+# scenario_provider = IndustrialDatasetScenarioProvider('data/iofrol.csv')
+# env = IndustrialScenarioEnv(scenario_provider)
 
 
 model = DQN("MlpPolicy", env, verbose=1)
 
 model.learn(total_timesteps=20000) 
+

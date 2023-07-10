@@ -28,7 +28,7 @@ class TestCaseExecutionDataLoader:
         max_size = 0
         ### process last result
         if self.data_format == "simple":
-            df = pd.read_csv(self.data_path, error_bad_lines=False, sep=",")
+            df = pd.read_csv(self.data_path, sep=",")
             for i in range(df.shape[0]):
                 last_result_str: str = df["LastResults"][i]
                 temp_list = (last_result_str.strip("[").strip("]").split(","))
