@@ -6,7 +6,7 @@ from gym import spaces
 from Config import Config
 
 from ci_cycle import CICycleLog
-
+from cal_met import calculate_rmse
 
 class CIListWiseEnv(gym.Env):
     def __init__(self, cycle_logs: CICycleLog, conf: Config):
@@ -28,6 +28,9 @@ class CIListWiseEnv(gym.Env):
                                             shape=(self.current_obs.shape[0],
                                                    self.current_obs.shape[1]))  # ID, execution time and LastResults
         self.agent_results = []
+        self.scenario = None
+        self.order = 0.12 +[0.15-0.12]*np.random.rand(100,1)
+        self.gt = 0.12 +[0.36-0.12]*np.random.rand(100,1)
         # self.APFD = 0
         # self.ID = 0
         # self.fail_rank = []
@@ -58,7 +61,8 @@ class CIListWiseEnv(gym.Env):
 
     def _initial_obs(self):
         return self.initial_observation
-
+    def get_rmse(self):
+        return calculate_rmse(self.order, self.gt)
     ## the reward function must be called before updating the observation
     def _calculate_reward(self, test_case_index):
         if test_case_index >= self.cycle_logs.get_test_cases_count() or \
@@ -89,11 +93,24 @@ class CIListWiseEnv(gym.Env):
         reward = verdict - abs(norm_rank - norm_exec_time)
         return reward
 
+    # def step(self, test_case_index):
+    #     done = False
+    #     reward = self._calculate_reward(test_case_index)
+    #     self.current_obs = self._next_observation(test_case_index)
+    #     if len(set(self.agent_results)) == self.cycle_logs.get_test_cases_count():
+    #         done = True
+
+    #     return self.current_obs, reward, done, {}
     def step(self, test_case_index):
         done = False
         reward = self._calculate_reward(test_case_index)
-        self.current_obs = self._next_observation(test_case_index)
-        if len(set(self.agent_results)) == self.cycle_logs.get_test_cases_count():
+        
+        # Convert self.agent_results to a tuple before creating the set
+        agent_results_tuple = tuple(self.agent_results)
+        
+        if len(set(agent_results_tuple)) == self.cycle_logs.get_test_cases_count():
             done = True
-
+        
+        self.current_obs = self._next_observation(test_case_index)
+        
         return self.current_obs, reward, done, {}

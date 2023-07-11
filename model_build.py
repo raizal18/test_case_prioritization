@@ -16,11 +16,6 @@ from stable_baselines3.dqn.policies import CnnPolicy, DQNPolicy, MlpPolicy, Mult
 from stable_baselines3 import PPO
 from stable_baselines3 import DQN
 
-env = gym.make("CartPole-v1")
-
-env = gym.envs.registry.keys()
-
-
 
 # import gym
 # from gym import spaces
@@ -85,7 +80,7 @@ from Config import Config
 
 conf = Config()
 
-conf.win_size = 10
+conf.win_size = 3
 
 env = CIListWiseEnv(ci_cycle_logs[1], conf)
 
@@ -95,5 +90,43 @@ env = CIListWiseEnv(ci_cycle_logs[1], conf)
 
 model = DQN("MlpPolicy", env, verbose=1)
 
-model.learn(total_timesteps=20000) 
+model.learn(total_timesteps=10000) 
 
+
+# Calculate performance metrics for the trained DQN model
+
+# Define the number of episodes for evaluation
+num_episodes = 3
+
+# Initialize variables for metrics
+total_faults_detected = 0
+total_cost = 0
+total_time_aware_rank = 0
+predicted_order = []
+for _ in range(num_episodes):
+    # Reset the environment for a new episode
+    obs = env.reset()
+    done = False
+    
+    
+    # Get the action from the trained DQN model
+    action, _ = model.predict(obs, deterministic=True)
+    predicted_order.append(action) 
+    # Take the action in the environment
+    obs, reward, done, _ = env.step(action)
+    
+    print(action)
+           
+# # Calculate metrics
+# apfd = total_faults_detected / (num_episodes * env.scenario.get_total_faults())
+# apfdc = total_faults_detected / total_cost
+# napfd = apfd / (1 - 1 / (2 * env.scenario.get_total_faults()))
+# apfd_ta = total_time_aware_rank / (num_episodes * env.scenario.get_total_faults())
+# rmse = ...  # Calculate RMSE if you have specific predictions and ground truth values
+
+# # Print or use the calculated metrics as needed
+# print("APFD:", apfd)
+# print("APFDc:", apfdc)
+# print("NAPFD:", napfd)
+# print("APFD_TA:", apfd_ta)
+# print("RMSE:", rmse)
