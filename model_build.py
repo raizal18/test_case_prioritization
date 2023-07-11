@@ -90,32 +90,65 @@ env = CIListWiseEnv(ci_cycle_logs[1], conf)
 
 model = DQN("MlpPolicy", env, verbose=1)
 
-model.learn(total_timesteps=10000) 
+model.learn(total_timesteps=40000) 
 
 
-# Calculate performance metrics for the trained DQN model
+rmse = env.get_rmse()
 
-# Define the number of episodes for evaluation
-num_episodes = 3
+from cal_met import calculate_apfd, calculate_apfd_ta, calculate_apfdc, calculate_napfd
 
-# Initialize variables for metrics
-total_faults_detected = 0
-total_cost = 0
-total_time_aware_rank = 0
-predicted_order = []
-for _ in range(num_episodes):
-    # Reset the environment for a new episode
-    obs = env.reset()
-    done = False
+
+## 
+test_data_loader = TestCaseExecutionDataLoader("data\gsdtsr-additional-feature.csv", "simple")
+test_data = test_data_loader.load_data()
+ci_cycle_logs = test_data_loader.pre_process()
+
+from Config import Config
+
+conf = Config()
+
+conf.win_size = 3
+
+env1 = CIListWiseEnv(ci_cycle_logs[1], conf)
+
+##
+test_data_loader = TestCaseExecutionDataLoader("data/paintcontrol-additional-features.csv", "simple")
+test_data = test_data_loader.load_data()
+ci_cycle_logs = test_data_loader.pre_process()
+
+from Config import Config
+
+conf = Config()
+
+conf.win_size = 3
+
+env2 = CIListWiseEnv(ci_cycle_logs[1], conf)
+
+
+rmse1 = env1.get_rmse()
+rmse2 = env2.get_rmse()
+
+
+# num_episodes = 3
+
+# # Initialize variables for metrics
+# total_faults_detected = 0
+# total_cost = 0
+# total_time_aware_rank = 0
+# predicted_order = []
+# for _ in range(num_episodes):
+#     # Reset the environment for a new episode
+#     obs = env.reset()
+#     done = False
     
     
-    # Get the action from the trained DQN model
-    action, _ = model.predict(obs, deterministic=True)
-    predicted_order.append(action) 
-    # Take the action in the environment
-    obs, reward, done, _ = env.step(action)
+#     # Get the action from the trained DQN model
+#     action, _ = model.predict(obs, deterministic=True)
+#     predicted_order.append(action) 
+#     # Take the action in the environment
+#     obs, reward, done, _ = env.step(action)
     
-    print(action)
+#     print(action)
            
 # # Calculate metrics
 # apfd = total_faults_detected / (num_episodes * env.scenario.get_total_faults())

@@ -5,7 +5,7 @@ class Config:
         self.padding_digit = -1
         self.win_size = -1
         self.dataset_type = "simple"
-        self.max_test_cases_count = 100
+        self.max_test_cases_count = 10
         self.training_steps = 10
         self.discount_factor = 0.9
         self.experience_replay = False
