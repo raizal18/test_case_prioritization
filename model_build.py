@@ -171,4 +171,8 @@ print(f"APFDa iofrol   : {form(apfda)} gsdtsr : {form(apfda1)} paintcontrol :{fo
 print(f"NAPFD iofrol   : {form(napfd)} gsdtsr : {form(napfd1)} paintcontrol :{form(napfd2)} ")
 print(f"rmse iofrol    : {form(rmse)} gsdtsr : {form(rmse1)} paintcontrol :{form(rmse2)} ")
 
+results = pd.DataFrame([[apfd, apfdc, napfd, apfd_ta, apfda,rmse],
+[apfd1, apfdc1, napfd1, apfd_ta1, apfda1,rmse1],
+[apfd2, apfdc2, napfd2, apfd_ta2, apfda2,rmse2]], columns = ["APFD", "APFD_C", "NAPFD", "APFD_TA", "APFDA", "RMSE"],index = ['iofrol','gsdtsr','paintcontrl'])
 
+results.to_csv('results/exp_results.csv')
