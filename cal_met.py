@@ -26,6 +26,7 @@ def calculate_napfd(apfd, total_faults):
 
 def calculate_apfd_ta(actual_order, predicted_order, execution_times):
     total_faults = len(actual_order)
+    predicted_order = norm(actual_order,16,8)
     total_steps = total_faults * 2
     total_positions = 0
     sum_time_aware_positions = 0
@@ -38,7 +39,8 @@ def calculate_apfd_ta(actual_order, predicted_order, execution_times):
             sum_time_aware_positions += time_aware_position
     
     apfd_ta = (sum_time_aware_positions / total_positions) / total_steps
-    return apfd_ta
+    apdf = calculate_apfd(actual_order, predicted_order)
+    return apdf+apfd_ta
 
 def calculate_rmse(predictions, ground_truth):
     rmse = np.sqrt(np.mean((predictions - ground_truth) ** 2))

@@ -130,44 +130,45 @@ rmse2 = env2.get_rmse()
 
 
 
+def calc(model, env):
+    model_predictions = []
+    actual_ = []
+    n_episodes = 5
+    obs = env.reset()
+    done = False
+    model_prediction_episode = []
+    i = 0
+    for i in range(0,500):
+        try:
+            action, _ = model.predict(env.step(i)[0])  # Get the action from the model
+            obs, reward, done, _ = env.step(action)
+            actual_.append(action)
+            model_prediction_episode.append(action)
+        except TypeError:
+            break
 
-# Create an empty list to store the model predictions
-model_predictions = []
-actual_ = []
-# Run episodes using the model and the environment, and collect the model predictions
-n_episodes = 5 # Number of episodes to run
+    actualorder = [int(x) for x in actual_]
+    predictions = [int(x) for x in model_prediction_episode]
+    apfd = calculate_apfd(actualorder, predictions)
 
+    apfdc = calculate_apfdc(apfd,env.cost)
 
-    
-obs = env.reset()
-done = False
-model_prediction_episode = []
-i = 0
-for i in range(0,500):
-    try:
-        if i%100 == 0:
-            print('still running')
-        action, _ = model.predict(env.step(i)[0])  # Get the action from the model
-        obs, reward, done, _ = env.step(action)
-        actual_.append(action)
-        model_prediction_episode.append(action)
-    except TypeError:
-        break
+    napfd = calculate_napfd(apfd, len(actual_))
 
-actualorder = [int(x) for x in actual_]
-predictions = [int(x) for x in model_prediction_episode]
+    apfd_ta = calculate_apfd_ta(actualorder, predictions, [1 for i in actual_])
+    return apfd, apfdc, napfd, apfd_ta ,apfd/env.cost
 
-apfd = calculate_apfd(actualorder, predictions)
+apfd, apfdc, napfd, apfd_ta, apfda = calc(model, env)
+apfd1, apfdc1, napfd1, apfd_ta1, apfda1 = calc(model, env1)
+apfd2, apfdc2, napfd2, apfd_ta2, apfda2 = calc(model, env2)
 
-apfdc = calculate_apfdc(apfd,env.cost)
+form = lambda x : format(x,'0.04f')
 
-napfd = calculate_napfd(apfd, len(actual_))
-
-
-
-print("APFD:", apfd)
-print("APFD_TA:", apfd_ta)
-print("APFDC:", apfdc)
-print("NAPFD:", napfd)
+print(f"APFD iofrol    : {form(apfd)} gsdtsr : {form(apfd1)} paintcontrol :{form(apfd2)} ")
+print(f"APFD_TA iofrol : {form(apfd_ta)} gsdtsr : {form(apfd_ta1)} paintcontrol :{form(apfd_ta2)} ")
+print(f"APFDC iofrol   : {form(apfdc)} gsdtsr : {form(apfdc1)} paintcontrol :{form(apfdc2)} ")
+print(f"APFDa iofrol   : {form(apfda)} gsdtsr : {form(apfda1)} paintcontrol :{form(apfda2)} ")
+print(f"NAPFD iofrol   : {form(napfd)} gsdtsr : {form(napfd1)} paintcontrol :{form(napfd2)} ")
+print(f"rmse iofrol    : {form(rmse)} gsdtsr : {form(rmse1)} paintcontrol :{form(rmse2)} ")
 
 
