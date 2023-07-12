@@ -32,6 +32,7 @@ class CIListWiseEnv(gym.Env):
         self.order = 0.12 +[0.15-0.12]*np.random.rand(100,1)
         self.gt = 0.12 +[0.36-0.12]*np.random.rand(100,1)
         self.cost = 1.05
+        self.percost = 0.99
         # self.APFD = 0
         # self.ID = 0
         # self.fail_rank = []

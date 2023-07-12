@@ -90,7 +90,7 @@ env = CIListWiseEnv(ci_cycle_logs[1], conf)
 
 model = DQN("MlpPolicy", env, verbose=1)
 
-model.learn(total_timesteps=40000) 
+model.learn(total_timesteps=50000) 
 
 
 rmse = env.get_rmse()
@@ -156,7 +156,7 @@ def calc(model, env):
     napfd = calculate_napfd(apfd, len(actual_))
 
     apfd_ta = calculate_apfd_ta(actualorder, predictions, [1 for i in actual_])
-    return apfd, apfdc, napfd, apfd_ta ,apfd/env.cost
+    return apfd, apfdc, napfd, apfd_ta ,apfd/env.percost
 
 apfd, apfdc, napfd, apfd_ta, apfda = calc(model, env)
 apfd1, apfdc1, napfd1, apfd_ta1, apfda1 = calc(model, env1)
@@ -164,12 +164,12 @@ apfd2, apfdc2, napfd2, apfd_ta2, apfda2 = calc(model, env2)
 
 form = lambda x : format(x,'0.04f')
 
-print(f"APFD iofrol    : {form(apfd)} gsdtsr : {form(apfd1)} paintcontrol :{form(apfd2)} ")
-print(f"APFD_TA iofrol : {form(apfd_ta)} gsdtsr : {form(apfd_ta1)} paintcontrol :{form(apfd_ta2)} ")
-print(f"APFDC iofrol   : {form(apfdc)} gsdtsr : {form(apfdc1)} paintcontrol :{form(apfdc2)} ")
-print(f"APFDa iofrol   : {form(apfda)} gsdtsr : {form(apfda1)} paintcontrol :{form(apfda2)} ")
-print(f"NAPFD iofrol   : {form(napfd)} gsdtsr : {form(napfd1)} paintcontrol :{form(napfd2)} ")
-print(f"rmse iofrol    : {form(rmse)} gsdtsr : {form(rmse1)} paintcontrol :{form(rmse2)} ")
+print(f"APFD iofrol    : {form(apfd)} gsdtsr : {form(apfd1)} paintcontrol : {form(apfd2)} ")
+print(f"APFD_TA iofrol : {form(apfd_ta)} gsdtsr : {form(apfd_ta1)} paintcontrol : {form(apfd_ta2)} ")
+print(f"APFDC iofrol   : {form(apfdc)} gsdtsr : {form(apfdc1)} paintcontrol : {form(apfdc2)} ")
+print(f"APFDa iofrol   : {form(apfda)} gsdtsr : {form(apfda1)} paintcontrol : {form(apfda2)} ")
+print(f"NAPFD iofrol   : {form(napfd)} gsdtsr : {form(napfd1)} paintcontrol : {form(napfd2)} ")
+print(f"rmse iofrol    : {form(rmse)} gsdtsr : {form(rmse1)} paintcontrol : {form(rmse2)} ")
 
 results = pd.DataFrame([[apfd, apfdc, napfd, apfd_ta, apfda,rmse],
 [apfd1, apfdc1, napfd1, apfd_ta1, apfda1,rmse1],
