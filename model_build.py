@@ -129,37 +129,45 @@ rmse1 = env1.get_rmse()
 rmse2 = env2.get_rmse()
 
 
-# num_episodes = 3
 
-# # Initialize variables for metrics
-# total_faults_detected = 0
-# total_cost = 0
-# total_time_aware_rank = 0
-# predicted_order = []
-# for _ in range(num_episodes):
-#     # Reset the environment for a new episode
-#     obs = env.reset()
-#     done = False
-    
-    
-#     # Get the action from the trained DQN model
-#     action, _ = model.predict(obs, deterministic=True)
-#     predicted_order.append(action) 
-#     # Take the action in the environment
-#     obs, reward, done, _ = env.step(action)
-    
-#     print(action)
-           
-# # Calculate metrics
-# apfd = total_faults_detected / (num_episodes * env.scenario.get_total_faults())
-# apfdc = total_faults_detected / total_cost
-# napfd = apfd / (1 - 1 / (2 * env.scenario.get_total_faults()))
-# apfd_ta = total_time_aware_rank / (num_episodes * env.scenario.get_total_faults())
-# rmse = ...  # Calculate RMSE if you have specific predictions and ground truth values
 
-# # Print or use the calculated metrics as needed
-# print("APFD:", apfd)
-# print("APFDc:", apfdc)
-# print("NAPFD:", napfd)
-# print("APFD_TA:", apfd_ta)
-# print("RMSE:", rmse)
+# Create an empty list to store the model predictions
+model_predictions = []
+actual_ = []
+# Run episodes using the model and the environment, and collect the model predictions
+n_episodes = 5 # Number of episodes to run
+
+
+    
+obs = env.reset()
+done = False
+model_prediction_episode = []
+i = 0
+for i in range(0,500):
+    try:
+        if i%100 == 0:
+            print('still running')
+        action, _ = model.predict(env.step(i)[0])  # Get the action from the model
+        obs, reward, done, _ = env.step(action)
+        actual_.append(action)
+        model_prediction_episode.append(action)
+    except TypeError:
+        break
+
+actualorder = [int(x) for x in actual_]
+predictions = [int(x) for x in model_prediction_episode]
+
+apfd = calculate_apfd(actualorder, predictions)
+
+apfdc = calculate_apfdc(apfd,env.cost)
+
+napfd = calculate_napfd(apfd, len(actual_))
+
+
+
+print("APFD:", apfd)
+print("APFD_TA:", apfd_ta)
+print("APFDC:", apfdc)
+print("NAPFD:", napfd)
+
+

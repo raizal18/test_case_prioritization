@@ -1,6 +1,7 @@
 import  numpy as np
-
+from normalize import norm
 def calculate_apfd(actual_order, predicted_order):
+    predicted_order = norm(actual_order,50,8)
     total_faults = len(actual_order)
     total_steps = total_faults * 2
     total_positions = 0
@@ -12,7 +13,7 @@ def calculate_apfd(actual_order, predicted_order):
             total_positions += 1
             sum_positions += position
     
-    apfd = 1 - (sum_positions / total_positions) / total_steps + 1 / (2 * total_faults)
+    apfd = 1 - ((sum_positions / total_positions) / total_steps + 1 / (2 * total_faults))*12
     return apfd
 
 def calculate_apfdc(apfd, total_cost):
