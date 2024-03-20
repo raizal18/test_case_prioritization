@@ -41,21 +41,21 @@ git clone https://github.com/yourusername/test-case-prioritization.git
 
 Install the required dependencies:
 bash
-cd test-case-prioritization
-pip install -r requirements.txt
+"cd test-case-prioritization"
+"pip install -r requirements.txt"
 
 Run the training script to train the DQN model:
 bash
 
-python train_model.py
+"python train_model.py"
 After training, you can evaluate the trained model on different scenarios using the evaluation script:
 bash
 
-python evaluate_model.py
+"python evaluate_model.py"
 
 
 Results
-Experiment results are stored in the results/ directory. The exp_results.csv file contains metrics such as APFD, APFD_TA, APFDC, NAPFD, and RMSE for each scenario.
+Experiment results are stored in the "results/" directory. The exp_results.csv file contains metrics such as APFD, APFD_TA, APFDC, NAPFD, and RMSE for each scenario.
 
 Contributing
 Contributions to this project are welcome! If you have suggestions for improvements or encounter any issues, feel free to open an issue or submit a pull request.
